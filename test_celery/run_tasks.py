@@ -1,5 +1,5 @@
 from __future__ import absolute_import
-from test_celery.tasks import longtime_add
+from .tasks import longtime_add
 
 
 if __name__ == '__main__':

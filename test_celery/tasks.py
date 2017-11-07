@@ -1,12 +1,12 @@
 from __future__ import absolute_import
 import os
-from test_celery.celery import app
+from .celery import app
 import time
 import requests
 from pymongo import MongoClient
 
 
-mongo_host = os.environ.get('MONGO_HOST', '127.0.0.1')
+mongo_host = os.environ.get('MONGO_HOST', 'localhost')
 mongo_port = os.environ.get('MONGO_PORT', 27018)
 client = MongoClient(mongo_host, mongo_port)
 db = client.mongodb_test
