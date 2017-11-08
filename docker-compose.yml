@@ -1,7 +1,6 @@
 version: '2'
 services:
     rabbit:
-        hostname: localhost
         image: rabbitmq:latest
         environment:
             - RABBITMQ_DEFAULT_USER=rabbit
@@ -10,19 +9,17 @@ services:
             - "5673:5672"
 
     worker:
-        hostname: localhost
         build:
             context: .
             dockerfile: Dockerfile
-        volumes:
-            - .:/usr/src/app
         links:
             - rabbit
         depends_on:
             - rabbit
+        environment:
+            - C_FORCE_ROOT=1
 
     database:
-        hostname: mongo
         image: mongo:latest
         ports:
             - "27018:27017"

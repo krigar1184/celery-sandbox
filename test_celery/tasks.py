@@ -6,8 +6,8 @@ import requests
 from pymongo import MongoClient
 
 
-mongo_host = os.environ.get('MONGO_HOST', 'localhost')
-mongo_port = os.environ.get('MONGO_PORT', 27018)
+mongo_host = os.environ.get('MONGO_HOST', 'database')
+mongo_port = os.environ.get('MONGO_PORT', 27017)
 client = MongoClient(mongo_host, mongo_port)
 db = client.mongodb_test
 collection = db.celery_test
@@ -26,3 +26,8 @@ def longtime_add(self, i):
         raise self.retry(exc=e)
 
     return r.status_code
+
+
+@app.task
+def test_task(x, y):
+    return x * y
