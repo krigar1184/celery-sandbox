@@ -5,7 +5,7 @@ from celery import Celery
 
 username = os.environ.get('RABBITMQ_USERNAME', 'rabbit')
 passwd = os.environ.get('RABBITMQ_PASSWD', 'rabbit')
-host = os.environ.get('RABBITMQ_HOST', 'rabbit')
+host = os.environ.get('RABBITMQ_HOST', '172.18.0.3')
 port = os.environ.get('RABBITMQ_PORT', '5672')
 
 broker = os.environ.get('CELERY_BROKER', 'amqp://{username}:{passwd}@{host}:{port}')
@@ -16,5 +16,8 @@ app = Celery(
     __name__,
     broker=broker.format(username=username, passwd=passwd, host=host, port=port),
     backend=backend,
-    include=include
+    include=include,
+    task_always_eager=True,
 )
+
+app.conf['task_always_eager'] = True

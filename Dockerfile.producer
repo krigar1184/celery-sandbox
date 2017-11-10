@@ -9,5 +9,4 @@ ADD ./test_celery/ /usr/src/app/test_celery
 WORKDIR /usr/src/app/
 RUN pip3 install -r requirements.txt
 ENV C_FORCE_ROOT 1
-# ENTRYPOINT python -m test_celery.run_tasks
 ENTRYPOINT dockerize -wait tcp://rabbit:5672 python3.6 -m test_celery.run_tasks
