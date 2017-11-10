@@ -28,6 +28,7 @@ def longtime_add(self, i):
     return r.status_code
 
 
-@app.task
+@app.task()
 def test_task(x, y):
-    return x * y
+    print('pewpew')
+    post.insert({'result': x * y})
