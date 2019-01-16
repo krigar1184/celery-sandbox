@@ -17,26 +17,40 @@ class CallbackException(Exception):
     pass
 
 
+class BaseSubtask(celery.Task):
+    def on_failure(self, exc, task_id, args, kwargs, einfo):
+        print('Exception info: ', einfo)
+        print('{0!r} failed: {1!r}'.format(task_id, exc))
+
+
 @app.task(bind=True)
 def parent_task(self):
     print('Starting parent task...')
-    subtask_signature = subtask.si()
-    callback_signature = callback_task.si()
-    chord = celery.chord([subtask_signature], body=callback_signature)
-    chord.delay()
+    chord = celery.chord([subtask1.si()], body=callback_task.si())
+    chord.on_error(errback_task.s()).delay()
     print('Finished parent task')
 
 
 @app.task(bind=True)
-def subtask(self):
-    print('Starting subtask...')
+def subtask1(self):
+    print('Starting subtask1...')
+
+    try:
+        raise CallbackException()
+    except Exception as e:
+        print('Subtask1 caught exception')
+        try:
+            raise self.retry(exc=e, countdown=5)
+        except type(e):
+            return False
+
+    return True
+
+@app.task(bind=True)
+def callback_task(self, *args, **kwargs):
+    print('Starting callback...')
 
 
 @app.task(bind=True)
-def callback_task(self):
-    print('Starting callback...')
-    try:
-        raise CallbackException()
-    except CallbackException as e:
-        self.request.update({'exception_type': type(e)})
-        raise CallbackException()
+def errback_task(request, exc, traceback):
+    print('This is an errback')

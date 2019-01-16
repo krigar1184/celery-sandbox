@@ -1,4 +1,4 @@
-version: '2'
+version: '3.4'
 services:
     rabbit:
         image: rabbitmq:latest
@@ -6,7 +6,7 @@ services:
             - RABBITMQ_DEFAULT_USER=rabbit
             - RABBITMQ_DEFAULT_PASS=rabbit
         ports:
-            - "5673:5672"
+            - "5673:5673"
 
     worker:
         build:
@@ -30,4 +30,4 @@ services:
     database:
         image: mongo:latest
         ports:
-            - "27018:27017"
+            - "27018:27018"
